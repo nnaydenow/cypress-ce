@@ -23,3 +23,31 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
+
+Cypress.Commands.add("typeInCorrectElement", { prevSubject: 'element' }, (subject, text, options = {}) => {
+    cy.get(subject)
+        .then(async $subject => {
+            const $realDomRef = await $subject.get(0).getFocusDomRefAsync()
+
+            cy.wrap($realDomRef).type(text, options)
+        })
+})
+
+Cypress.Commands.add("typeInCorrectElement2", { prevSubject: 'element' }, (subject, text, options = {}) => {
+    cy.wrap(subject)
+        .getFocusDomRef()
+        .then($realDomRef => {
+            cy.wrap($realDomRef).type(text, options)
+        })
+})
+
+Cypress.Commands.addQuery('getFocusDomRef', function () {
+    return  async (subject) => {
+        if (!subject?.[0].tagName.startsWith('UI5')) {
+            const err = `getFocusDomRef() needs to be chained to`;
+            throw new TypeError(err);
+        }
+        const shadow = await subject[0].getFocusDomRefAsync();
+        return Cypress.dom.wrap(shadow)
+    };
+});
