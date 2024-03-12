@@ -29,6 +29,7 @@ Cypress.Commands.add("typeInCorrectElement", { prevSubject: 'element' }, (subjec
         .then(async $subject => {
             const $realDomRef = await $subject.get(0).getFocusDomRefAsync()
 
+            console.log("======", $realDomRef)
             cy.wrap($realDomRef).type(text, options)
         })
 })
@@ -37,6 +38,8 @@ Cypress.Commands.add("typeInCorrectElement2", { prevSubject: 'element' }, (subje
     cy.wrap(subject)
         .getFocusDomRef()
         .then($realDomRef => {
+
+            console.log("======", $realDomRef)
             cy.wrap($realDomRef).type(text, options)
         })
 })
